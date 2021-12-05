@@ -71,13 +71,11 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Optional<String> longestAlbum() {
-        Map<Optional<String>, List<Song>> albumSongMap = songs.stream().collect(Collectors.groupingBy(Song::getAlbumName));
         Map<Optional<String>, Double> albumDurationMap = new HashMap<>();
-        albumSongMap.forEach((x, y) -> albumDurationMap.put(x, y.stream().mapToDouble(Song::getDuration).sum()));
-
+        songs.stream().collect(Collectors.groupingBy(Song::getAlbumName))
+            .forEach((x, y) -> albumDurationMap.put(x, y.stream().mapToDouble(Song::getDuration).sum()));
         return albumDurationMap.entrySet().stream().max(Comparator.comparingDouble(Map.Entry::getValue)).get().getKey();
-//        return songs.stream().collect(Collectors.groupingBy(Song::getAlbumName))
-//                .;
+
     }
 
     private static final class Song {
