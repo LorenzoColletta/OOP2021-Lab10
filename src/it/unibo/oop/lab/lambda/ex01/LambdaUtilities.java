@@ -89,7 +89,7 @@ public final class LambdaUtilities {
             value.add(x);
             m.put(op.apply(x), value);
         });
-        return null;
+        return m;
     }
 
     /**
@@ -112,7 +112,7 @@ public final class LambdaUtilities {
          */
 
         map.forEach((x, y) -> y = y.filter(z -> z != null).or(() -> Optional.ofNullable(def.get())));
-        return null;
+        return map;
     }
 
     /**
