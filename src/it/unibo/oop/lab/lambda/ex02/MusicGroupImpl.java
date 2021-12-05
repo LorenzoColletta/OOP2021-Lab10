@@ -39,7 +39,7 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public Stream<String> albumNames() {
-        return songs.stream().map(x -> x.getAlbumName().get());
+        return albums.entrySet().stream().map(x -> x.getKey());
     }
 
     @Override
@@ -49,7 +49,7 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public int countSongs(final String albumName) {
-        return (int) songs.stream().filter(sn -> sn.getAlbumName().get().equals(albumName)).count();
+        return (int) songs.stream().filter(s -> s.getAlbumName().isPresent()).filter(sn -> sn.getAlbumName().get().equals(albumName)).count();
     }
 
     @Override
@@ -59,7 +59,7 @@ public final class MusicGroupImpl implements MusicGroup {
 
     @Override
     public OptionalDouble averageDurationOfSongs(final String albumName) {
-        return songs.stream().filter(sn -> sn.getAlbumName().get().equals(albumName)).
+        return songs.stream().filter(s -> s.getAlbumName().isPresent()).filter(sn -> sn.getAlbumName().get().equals(albumName)).
                 mapToDouble(Song::getDuration).
                 average();
     }
@@ -72,13 +72,9 @@ public final class MusicGroupImpl implements MusicGroup {
     @Override
     public Optional<String> longestAlbum() {
         return songs.stream().collect(Collectors.groupingBy(Song::getAlbumName)).
-                entrySet().stream().max(Comparator.comparingDouble(x -> x.getValue().stream().mapToDouble(Song::getDuration).sum())
-                ).get().getKey();
-
-//        Map<Optional<String>, Double> albumDurationMap = new HashMap<>();
-//        songs.stream().collect(Collectors.groupingBy(Song::getAlbumName)).forEach((x, y) -> albumDurationMap.put(x, y.stream().mapToDouble(Song::getDuration).sum()));
-//        return albumDurationMap.entrySet().stream().max(Comparator.comparingDouble(Map.Entry::getValue)).get().getKey();
-
+                entrySet().stream()
+                .max(Comparator.comparingDouble(x -> x.getValue().stream().mapToDouble(Song::getDuration).sum()))
+                .get().getKey();
     }
 
     private static final class Song {
