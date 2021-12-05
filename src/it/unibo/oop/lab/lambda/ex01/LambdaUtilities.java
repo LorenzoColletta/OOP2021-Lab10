@@ -87,6 +87,7 @@ public final class LambdaUtilities {
         list.forEach(x -> {
             Set<T> value = Optional.ofNullable(m.get(op.apply(x))).orElse(new HashSet<T>());
             value.add(x);
+            m.put(op.apply(x), value);
         });
         return null;
     }
